@@ -74,7 +74,9 @@
 		var asmFile = event.target.files[0]
 		var reader = new FileReader();
 		reader.onload = function(event){
-			editor.setValue(event.target.result);		
+			// don't select text
+			// cf. https://github.com/ajaxorg/ace/issues/1485
+			editor.setValue(event.target.result, -1);		
 		};
 		reader.readAsText(asmFile);
 	}
