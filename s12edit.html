@@ -14,7 +14,7 @@
 </head>
 <body>
 <h1>HCS12 Editor</h1>
-<button onclick="editor.getContents()">New asm file</button>
+<button onclick="newAsmFile(event)">New asm file</button>
 <!--<button onclick="editor.getContents()">Open asm file</button>-->
 <!-- cf. https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications -->
 <input type="file" id="input" value="Open asm file" onchange="openAsmFile(event)" />
@@ -69,8 +69,14 @@
 		compilerflasher = new compilerflasher(function () {return []});
     });
 	*/
+	/* TODO: use this to prompt for unsaved changes with new/open file
+	function promptUnsavedChanges(){
+		if editor.document ...
+	}
+	*/
 	// cf. https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onload
 	function openAsmFile(event) {
+		// TODO: prompt for unsaved changes
 		var asmFile = event.target.files[0]
 		var reader = new FileReader();
 		reader.onload = function(event){
@@ -80,6 +86,11 @@
 		};
 		reader.readAsText(asmFile);
 	}
+	function newAsmFile(event) {
+		// TODO: prompt for unsaved changes
+		editor.setValue("", -1);
+	}
+	
 </script>
 </body>
 </html>
