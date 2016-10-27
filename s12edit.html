@@ -15,7 +15,9 @@
 <body>
 <h1>HCS12 Editor</h1>
 <button onclick="editor.getContents()">New asm file</button>
-<button onclick="editor.getContents()">Open asm file</button>
+<!--<button onclick="editor.getContents()">Open asm file</button>-->
+<!-- cf. https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications -->
+<input type="file" id="input" value="Open asm file" onchange="openAsmFile(event)" />
 <button onclick="editor.getContents()">Save asm file</button>
 <button onclick="editor.getContents()">Run assembler</button>
 <button onclick="editor.getContents()" disabled>Download to board</button>
@@ -27,16 +29,15 @@
 -->
 <div id="editor" style="height: 500px; width: 100%"></div>
 <!-- cf. https://learn.sparkfun.com/tutorials/terminal-basics/codebender-serial-monitor-browser-based- -->
-<!-- Need to use js directly. Can't access IFrame -->
-<!--
+<!-- Will need to use js directly. Can't access cf from IFrame -->
 <iframe id="serialmon" style="height: 510px; width: 100%; margin: 10px 0 10px; border:none;" allowTransparency="true" src="https://codebender.cc/embed/serialmonitor"></iframe>
--->
 
 <!--
 <div id="cb_cf_serial_monitor" style="height: 500px; width: 100%; margin: 10px 0 10px; border:none;"></div>
 -->
 
 <!-- adapted from https://codebender.cc/embed/serialmonitor -->
+<!-- not working yet
 <div class="well">
 	<h4>Serial Monitor: </h4>
 	<div id="controls-container">
@@ -54,6 +55,7 @@
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="//codebender.cc/embed/compilerflasher.js" type="text/javascript"></script>
+-->
 
 <!-- load from CDN --> 
 <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js" type="text/javascript" charset="utf-8"></script>
@@ -62,9 +64,20 @@
     var editor = ace.edit("editor");
     //editor.setTheme("ace/theme/monokai");
     //editor.getSession().setMode("ace/mode/javascript");
-    $(document).ready(function(){
+    /*
+	$(document).ready(function(){
 		compilerflasher = new compilerflasher(function () {return []});
     });
+	*/
+	// cf. https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onload
+	function openAsmFile(event) {
+		var asmFile = event.target.files[0]
+		var reader = new FileReader();
+		reader.onload = function(event){
+			editor.setValue(event.target.result);		
+		};
+		reader.readAsText(asmFile);
+	}
 </script>
 </body>
 </html>
