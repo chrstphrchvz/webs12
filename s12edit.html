@@ -56,7 +56,10 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="//codebender.cc/embed/compilerflasher.js" type="text/javascript"></script>
 -->
-
+<h2>Assembler messages</h2>
+<div id="asmMessages" style="height: 500px; width: 100%"></div>
+<h2>List file</h2>
+<div id="listFile" style="height: 500px; width: 100%"></div>
 <!-- load from CDN --> 
 <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js" type="text/javascript" charset="utf-8"></script>
 
@@ -64,6 +67,11 @@
 	// TODO: prompt for unsaved changes before navigating
 
     var editor = ace.edit("editor");
+	var asmMessages = ace.edit("asmMessages");
+	asmMessages.setReadOnly(true);
+	var listFile = ace.edit("listFile");
+	listFile.setReadOnly(true);
+
     //editor.setTheme("ace/theme/monokai");
     //editor.getSession().setMode("ace/mode/javascript");
     /*
