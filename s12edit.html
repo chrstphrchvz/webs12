@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>HCS12 Editor</title>
+<!--<style type="text/css" media="screen">
+    #editor { 
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+</style>-->
+</head>
+<body>
+<h1>HCS12 Editor</h1>
+<button onclick="editor.getContents()">New asm file</button>
+<button onclick="editor.getContents()">Open asm file</button>
+<button onclick="editor.getContents()">Save asm file</button>
+<button onclick="editor.getContents()">Run assembler</button>
+<button onclick="editor.getContents()" disabled>Download to board</button>
+<button onclick="" disabled>Download S-record</button>
+<br />
+<!-- suggest using js directly instead of IFrame -->
+<!--
+<iframe id="asmeditor" style="height: 500px; width: 100%; border: none;" src="ace-builds/editor.html">If you're reading this your browser does not support IFrames</iframe>
+-->
+<div id="editor" style="height: 500px; width: 100%"></div>
+<!-- cf. https://learn.sparkfun.com/tutorials/terminal-basics/codebender-serial-monitor-browser-based- -->
+<!-- Need to use js directly. Can't access IFrame -->
+<!--
+<iframe id="serialmon" style="height: 510px; width: 100%; margin: 10px 0 10px; border:none;" allowTransparency="true" src="https://codebender.cc/embed/serialmonitor"></iframe>
+-->
+
+<!--
+<div id="cb_cf_serial_monitor" style="height: 500px; width: 100%; margin: 10px 0 10px; border:none;"></div>
+-->
+
+<div class="well">
+	<h4>Serial Monitor: </h4>
+	<div id="controls-container">
+		<span>Port:</span>
+		<select id="cb_cf_ports"></select>
+		<span>Speed:</span>
+		<select id="cb_cf_baud_rates"></select>
+		<button id="cb_cf_serial_monitor_connect" class="btn">
+			<i class="icon-link"></i>
+			Connect
+
+		</button>
+	</div>
+	<div id="cb_cf_serial_monitor"></div>
+	<div id="cb_cf_operation_output"></div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="//codebender.cc/embed/compilerflasher.js" type="text/javascript"></script>
+
+<!-- load from CDN --> 
+<script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    var editor = ace.edit("editor");
+    //editor.setTheme("ace/theme/monokai");
+    //editor.getSession().setMode("ace/mode/javascript");
+    $(document).ready(function(){
+		compilerflasher = new compilerflasher(function () {return []});
+    });
+</script>
+</body>
+</html>
