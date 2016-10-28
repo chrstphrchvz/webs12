@@ -107,18 +107,22 @@
 		var formData = new FormData();
 		var blob = new Blob([editor.getValue()], {type: 'plain/text'});
 		formData.append('fileupload', blob, "s12edit.asm");
-		var request = new XMLHttpRequest();
-		request.type = "json";
-		request.onreadystatechange = function(event){
-			if(request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-		        console.log(request.responseText);
-				SRecordFile = request.response.SRecordFile;
-				listFile.setValue(request.response.listFile, -1);
-				asmMessages.setValue(request.response.asmMessages, -1);
+		// cf. https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+		fetch("cgi-bin/asmstrings.cgi", {
+			method: "POST",
+			body: formData
+		}).then(function(response) {
+			var contentType = response.headers.get("content-type");
+			if(contentType && contentType.indexOf("application/json") !== -1) {
+				return response.json().then(function(json) {
+					SRecordFile = json.SRecordFile;
+					listFile.setValue(json.listFile, -1);
+					asmMessages.setValue(json.asmMessages, -1);
+				});
+			} else {
+				console.log("Oops, we haven't got JSON!");
 			}
-		};
-		request.open("POST", "cgi-bin/asmstrings.cgi");
-		request.send(formData);
+		});
 	}
 	
 </script>
