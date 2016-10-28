@@ -35,8 +35,8 @@ if fileitem.filename:
     # put command output in dictionary
     json_data = {
         'asmMessages' : hsw12_output,
-        'listFile' : open(UPLOAD_PATH + fn + LST_SUFFIX).read()),
-        'SRecordFile' : open(UPLOAD_PATH + fn + SREC_SUFFIX).read()),
+        'listFile' : open(UPLOAD_PATH + fn + LST_SUFFIX).read(),
+        'SRecordFile' : open(UPLOAD_PATH + fn + SREC_SUFFIX).read(),
     }
     
     # return command output as JSON
