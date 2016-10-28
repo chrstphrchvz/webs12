@@ -18,10 +18,10 @@
 <!--<button onclick="editor.getContents()">Open asm file</button>-->
 <!-- cf. https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications -->
 <input type="file" id="input" value="Open asm file" onchange="openAsmFile(event)" />
-<button onclick="editor.getContents()">Save asm file</button>
+<button onclick="download('myprogram.asm',editor.getValue())">Save asm file</button>
 <button onclick="runAssembler(event)">Run assembler</button>
 <button onclick="editor.getContents()" disabled>Download to board</button>
-<button onclick="downloadSRecord()">Download S-record</button>
+<button onclick="download('myprogram.s19',SRecordFile)">Download S-record</button>
 <br />
 <!-- suggest using js directly instead of IFrame -->
 <!--
@@ -124,17 +124,19 @@
 			}
 		});
 	}
-	// cf. http://stackoverflow.com/a/18197341
+	// copied from http://stackoverflow.com/a/18197341 (Pokorný, Flaschen, et al.) 
 	// (creates an <a href="..."></a> element, clicks it, then deletes it.)
-	function downloadSRecord(){
+	// NOTE: using FileSaver.js would be better in order to replicate "Save As" functionality in desktop program
+	function download(filename, text) {
 		var element = document.createElement('a');
-		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(SRecordFile));
-		element.setAttribute('download', 'myprogram.s19');
+		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+		element.setAttribute('download', filename);
 		element.style.display = 'none';
 		document.body.appendChild(element);
 		element.click();
 		document.body.removeChild(element);
 	}
+
 	
 </script>
 </body>
