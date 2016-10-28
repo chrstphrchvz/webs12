@@ -14,7 +14,7 @@ INCLUDE_PATH = '../include/'
 UPLOAD_PATH = '../uploads/'
 SREC_SUFFIX = '_pag.s19'
 LST_SUFFIX = '.lst'
-print "Content-Type: text/javascript" # return assembler output as js strings
+print "Content-Type: application/json" # return assembler output as JSON strings
 print                               # blank line, end of headers
 
 form = cgi.FieldStorage()
