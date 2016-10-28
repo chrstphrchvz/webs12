@@ -31,16 +31,13 @@ if fileitem.filename:
     hsw12_output = subprocess.check_output(
         ['perl', HSW12ASM_PATH, UPLOAD_PATH + fn, '-L', INCLUDE_PATH, '-S19'],
         stderr=subprocess.STDOUT)
-    # return command output
-    print """
-    asmMessages = %s;
-    """ % json.dumps(hsw12_output),
-    # return list file
-    print """
-    listFile = %s;
-    """ % json.dumps(open(UPLOAD_PATH + fn + LST_SUFFIX).read()),
-    # return S record file
-    print """
-    SRecordFile = %s;
-    """ % json.dumps(open(UPLOAD_PATH + fn + SREC_SUFFIX).read()),
-
+    
+    # put command output in dictionary
+    json_data = {
+        'asmMessages' : hsw12_output,
+        'listFile' : open(UPLOAD_PATH + fn + LST_SUFFIX).read()),
+        'SRecordFile' : open(UPLOAD_PATH + fn + SREC_SUFFIX).read()),
+    }
+    
+    # return command output as JSON
+    print json.dumps(json_data),
