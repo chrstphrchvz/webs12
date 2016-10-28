@@ -19,7 +19,7 @@
 <!-- cf. https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications -->
 <input type="file" id="input" value="Open asm file" onchange="openAsmFile(event)" />
 <button onclick="editor.getContents()">Save asm file</button>
-<button onclick="editor.getContents()">Run assembler</button>
+<button onclick="runAssembler(event)">Run assembler</button>
 <button onclick="editor.getContents()" disabled>Download to board</button>
 <button onclick="" disabled>Download S-record</button>
 <br />
@@ -65,6 +65,8 @@
 
 <script>
 	// TODO: prompt for unsaved changes before navigating
+	
+	var SRecordFile = "";
 
     var editor = ace.edit("editor");
 	var asmMessages = ace.edit("asmMessages");
@@ -99,6 +101,24 @@
 	function newAsmFile(event) {
 		// TODO: prompt for unsaved changes
 		editor.setValue("", -1);
+	}
+	function runAssembler(event) {
+		// cf. http://stackoverflow.com/a/22858914
+		var formData = new FormData();
+		var blob = new Blob([editor.getValue()], {type: 'plain/text'});
+		formData.append('fileupload', blob, "s12edit.asm");
+		var request = new XMLHttpRequest();
+		request.type = "json";
+		request.onreadystatechange = function(event){
+			if(request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+		        console.log(request.responseText);
+				SRecordFile = request.response.SRecordFile;
+				listFile.setValue(request.response.listFile, -1);
+				asmMessages.setValue(request.response.asmMessages, -1);
+			}
+		};
+		request.open("POST", "cgi-bin/asmstrings.cgi");
+		request.send(formData);
 	}
 	
 </script>
