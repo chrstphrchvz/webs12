@@ -142,6 +142,9 @@
 				// cf. https://github.com/ajaxorg/ace/issues/1485
 				editor.setValue(event.target.result, -1);	
 		    	editor.session.getUndoManager().markClean();	
+				// workaround input onchange event not firing when same file is selected
+				// cf. http://stackoverflow.com/a/12102992
+				document.getElementById('input').value = null;
 			};
 			reader.readAsText(asmFile);								
 		}
