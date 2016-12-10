@@ -18,7 +18,7 @@
 <!--<button onclick="editor.getContents()">Open asm file</button>-->
 <!-- cf. https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications -->
 <input type="file" id="input" value="Open asm file" onchange="openAsmFile(event)" />
-<button onclick="download('myprogram.asm',editor.getValue())">Save asm file</button>
+<button onclick="saveAsmFile(event)">Save asm file</button>
 <button onclick="runAssembler(event)">Run assembler</button>
 <button onclick="editor.getContents()" disabled>Download to board</button>
 <button onclick="download('myprogram.s19',SRecordFile)">Download S-record</button>
@@ -64,11 +64,60 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js" type="text/javascript" charset="utf-8"></script>
 
 <script>
-	// TODO: prompt for unsaved changes before navigating
+
+	/* For handling unsaved changes, a few mechanisms are used:
+	 * 1. window.onbeforeunload is set to a function that
+	 *    checks if there are "unsaved changes" using isClean();
+	 * 2. functions for new/open Asm file check if document
+	 *    has changed, and if so will prompt using confirm();
+	 *    they then markClean() the editor.
+	 * The isClean() and markClean() are documented as undocumented.
+	 *
+	 * References:
+	 * http://stackoverflow.com/a/1119324 (K. Henry)
+	 * http://stackoverflow.com/a/19717243 (anonymous "A User")
+	 * https://github.com/ajaxorg/ace/issues/324#issuecomment-60917355 (H. Amirjanyan)
+	 * https://github.com/ajaxorg/ace/issues/324#issuecomment-151274762 (GitHub user vanillajonathan)
+	 */ 
+
+
+    var editor = ace.edit("editor");
+	var unsavedMessage = 'Proceed without saving changes?';
+	// adapted/copied from http://stackoverflow.com/a/1119324 (K. Henry)
+	window.onbeforeunload = function (e) 
+	{
+		// If we haven't been passed the event get the window.event
+		e = e || window.event;
+		
+		// check for unsaved changes
+		if (!editor.session.getUndoManager().isClean())
+		{
+			// For IE6-8 and Firefox prior to version 4
+			if (e) 
+			{
+				e.returnValue = unsavedMessage;
+			}
+
+			// For Chrome, Safari, IE8+ and Opera 12+
+			return unsavedMessage;
+		}
+		else
+		{
+			return null;
+		}
+	};	
+	function checkUnsavedChanges(){
+		var clean = editor.session.getUndoManager().isClean();
+		var confirmed = false;		
+		if(!clean)
+		{
+			confirmed = confirm(unsavedMessage);
+		}
+		return clean || confirmed;
+	}
 	
 	var SRecordFile = "";
 
-    var editor = ace.edit("editor");
 	var asmMessages = ace.edit("asmMessages");
 	asmMessages.setReadOnly(true);
 	var listFile = ace.edit("listFile");
@@ -81,26 +130,27 @@
 		compilerflasher = new compilerflasher(function () {return []});
     });
 	*/
-	/* TODO: use this to prompt for unsaved changes with new/open file
-	function promptUnsavedChanges(){
-		if editor.document ...
-	}
-	*/
+
+
 	// cf. https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onload
 	function openAsmFile(event) {
-		// TODO: prompt for unsaved changes
-		var asmFile = event.target.files[0]
-		var reader = new FileReader();
-		reader.onload = function(event){
-			// don't select text
-			// cf. https://github.com/ajaxorg/ace/issues/1485
-			editor.setValue(event.target.result, -1);		
-		};
-		reader.readAsText(asmFile);
+		if (checkUnsavedChanges()) {
+			var asmFile = event.target.files[0];
+			var reader = new FileReader();
+			reader.onload = function(event){
+				// don't select text
+				// cf. https://github.com/ajaxorg/ace/issues/1485
+				editor.setValue(event.target.result, -1);	
+		    	editor.session.getUndoManager().markClean();	
+			};
+			reader.readAsText(asmFile);								
+		}
 	}
 	function newAsmFile(event) {
-		// TODO: prompt for unsaved changes
-		editor.setValue("", -1);
+		if (checkUnsavedChanges()) {
+			editor.setValue("", -1);
+		    editor.session.getUndoManager().markClean();
+		}
 	}
 	function runAssembler(event) {
 		// cf. http://stackoverflow.com/a/22858914
@@ -136,8 +186,10 @@
 		element.click();
 		document.body.removeChild(element);
 	}
-
-	
+	function saveAsmFile(event) {
+		download('myprogram.asm',editor.getValue());
+	    editor.session.getUndoManager().markClean();
+	}
 </script>
 </body>
 </html>
