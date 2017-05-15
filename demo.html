@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>ACE in Action</title>
+<style type="text/css" media="screen">
+
+    #editor1 { 
+        position: relative;
+        top: 0;
+        /* right: 0; */
+        /* bottom: 0; */
+        left: 0;
+        /* height: 100%; */
+        height: 500px;
+        width: 100%;
+    }
+    #editor2 { 
+        position: relative;
+        top: 0;
+        /* right: 0; */
+        /* bottom: 0; */
+        left: 0;
+        /* height: 100%; */
+        height: 500px;
+        width: 100%;
+    }
+    .gutter {
+	  background-color: #eee;
+	  background-repeat: no-repeat;
+	  background-position: 50%;
+	}
+
+	.gutter.gutter-vertical {
+	  background-image: url('https://cdn.rawgit.com/nathancahill/Split.js/966c3d278c814df2c89faa709bfeb6a734cac168/grips/horizontal.png');
+	  cursor: ns-resize;
+	}
+
+	.split {
+	  -webkit-box-sizing: border-box;
+		 -moz-box-sizing: border-box;
+		      box-sizing: border-box;
+	}
+</style>
+</head>
+<body>
+<div>
+<!--
+<div id="editor1" class="split">function foo(items) {
+    var x = "All this is syntax highlighted";
+    return x;
+}</div>
+    
+<div id="editor2" class="split">function foo(items) {
+    var x = "All this is syntax highlighted";
+    return x;
+}</div>
+-->
+<div id="editor1">test1</p>
+<div id="editor2">test2</p>
+</div>
+<script src="https://cdn.rawgit.com/nathancahill/Split.js/966c3d278c814df2c89faa709bfeb6a734cac168/split.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    Split(['#editor1', '#editor2'], {
+    	direction: 'vertical'
+	});
+    /*var editor1 = ace.edit("editor1");
+    editor1.setTheme("ace/theme/monokai");
+    editor1.getSession().setMode("ace/mode/javascript");
+    var editor2 = ace.edit("editor1");
+    editor2.getSession().setMode("ace/mode/javascript");
+    */
+</script>
+</body>
+</html>
