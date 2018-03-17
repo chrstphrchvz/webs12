@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>HCS12 Editor</title>
+<title>WebS12</title>
 <!--<style type="text/css" media="screen">
     #editor { 
         position: absolute;
@@ -14,7 +14,7 @@
 </style>-->
 </head>
 <body>
-<h1>HCS12 Editor</h1>
+<h1>WebS12</h1>
 <button onclick="newAsmFile(event)">New asm file</button>
 <!--<button onclick="editor.getContents()">Open asm file</button>-->
 <!-- cf. https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications -->
@@ -28,6 +28,7 @@
 <!--
 <iframe id="asmeditor" style="height: 500px; width: 100%; border: none;" src="ace-builds/editor.html">If you're reading this your browser does not support IFrames</iframe>
 -->
+<h2>Assembly file editor</h2>
 <div id="editor" style="height: 500px; width: 100%"></div>
 <!-- cf. https://learn.sparkfun.com/tutorials/terminal-basics/codebender-serial-monitor-browser-based- -->
 <!-- Will need to use js directly. Can't access cf from IFrame -->
