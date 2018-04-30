@@ -1,17 +1,17 @@
 /* For handling unsaved changes, a few mechanisms are used:
-    * 1. window.onbeforeunload is set to a function that
-    *    checks if there are "unsaved changes" using isClean();
-    * 2. functions for new/open Asm file check if document
-    *    has changed, and if so will prompt using confirm();
-    *    they then markClean() the editor.
-    * The isClean() and markClean() are documented as undocumented.
-    *
-    * References:
-    * http://stackoverflow.com/a/1119324 (K. Henry)
-    * http://stackoverflow.com/a/19717243 (anonymous "A User")
-    * https://github.com/ajaxorg/ace/issues/324#issuecomment-60917355 (H. Amirjanyan)
-    * https://github.com/ajaxorg/ace/issues/324#issuecomment-151274762 (GitHub user vanillajonathan)
-    */ 
+ * 1. window.onbeforeunload is set to a function that
+ *    checks if there are "unsaved changes" using isClean();
+ * 2. functions for new/open Asm file check if document
+ *    has changed, and if so will prompt using confirm();
+ *    they then markClean() the editor.
+ * The isClean() and markClean() are documented as undocumented.
+ *
+ * References:
+ * http://stackoverflow.com/a/1119324 (K. Henry)
+ * http://stackoverflow.com/a/19717243 (anonymous "A User")
+ * https://github.com/ajaxorg/ace/issues/324#issuecomment-60917355 (H. Amirjanyan)
+ * https://github.com/ajaxorg/ace/issues/324#issuecomment-151274762 (GitHub user vanillajonathan)
+ */ 
 
 
 var editor = ace.edit("editor");
