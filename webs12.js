@@ -94,7 +94,7 @@ function runAssembler(event) {
     var blob = new Blob([editor.getValue()], {type: 'plain/text'});
     formData.append('fileupload', blob, "s12edit.asm");
     // cf. https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
-    fetch("cgi-bin/asmstrings.pl", {
+    fetch("https://webs12.host-ed.me/cgi-bin/asmstrings.pl", {
         method: "POST",
         body: formData
     }).then(function(response) {
