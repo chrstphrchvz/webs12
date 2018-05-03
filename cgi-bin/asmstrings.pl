@@ -45,6 +45,7 @@ my $json_data = {
 
 print $query->header(
 	-type => "application/json",
+	-access_control_allow_origin => 'https://chrstphrchvz.github.io',
 );
 
 print encode_json $json_data;
