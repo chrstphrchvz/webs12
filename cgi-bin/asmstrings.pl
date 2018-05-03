@@ -8,7 +8,7 @@ use strict;
 use CGI;
 use CGI::Carp qw ( fatalsToBrowser );
 
-# cf. http://perlmaven.com/json
+# cf. https://perlmaven.com/json
 #use JSON::MaybeXS ':all'; # MaybeXS is not available on host-ed
 use JSON::PP;
 # use HSW12ASM module directly
@@ -28,19 +28,25 @@ my $srec_word_entries = 1;
 my $query = new CGI;
 my $upload_filehandle = $query->upload("fileupload");
 
-# cf. http://search.cpan.org/~leejo/CGI-4.35/lib/CGI.pod#PROCESSING_A_FILE_UPLOAD_FIELD
+# cf. http://search.cpan.org/~leejo/CGI/lib/CGI.pod#PROCESSING_A_FILE_UPLOAD_FIELD
 my $code = hsw12_asm->new(
-					[$query->tmpFileName($upload_filehandle)],
-					[INCLUDE_PATH], {}, "S12", 0);
+	[$query->tmpFileName($upload_filehandle)],
+	[INCLUDE_PATH],
+	{},
+	"S12",
+	0,
+);
 
 my $json_data = {
-    asmMessages => $code->print_mem_alloc(),
-    listFile => $code->print_listing(),
-    SRecordFile => $code->print_pag_srec(uc($prog_name),
-					    $srec_format,
-					    $srec_data_length,
-					    $srec_add_s5,
-					    $srec_word_entries),
+	asmMessages => $code->print_mem_alloc(),
+	listFile => $code->print_listing(),
+	SRecordFile => $code->print_pag_srec(
+		uc($prog_name),
+		$srec_format,
+		$srec_data_length,
+		$srec_add_s5,
+		$srec_word_entries,
+	),
 };
 
 print $query->header(
