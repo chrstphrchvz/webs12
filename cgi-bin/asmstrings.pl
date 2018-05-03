@@ -45,6 +45,7 @@ my $json_data = {
 
 print $query->header(
 	-type => "application/json",
+	# cf. https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#Simple_requests
 	-access_control_allow_origin => 'https://chrstphrchvz.github.io',
 );
 
