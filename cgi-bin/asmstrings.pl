@@ -43,5 +43,8 @@ my $json_data = {
 					    $srec_word_entries),
 };
 
-print $query->header("application/json");
+print $query->header(
+	-type => "application/json",
+);
+
 print encode_json $json_data;
