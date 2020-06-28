@@ -28,7 +28,7 @@ my $srec_word_entries = 1;
 my $query = new CGI;
 my $upload_filehandle = $query->upload("fileupload");
 
-# cf. http://search.cpan.org/~leejo/CGI/lib/CGI.pod#PROCESSING_A_FILE_UPLOAD_FIELD
+# cf. https://metacpan.org/pod/distribution/CGI/lib/CGI.pod#Processing-a-file-upload-field
 my $code = hsw12_asm->new(
 	[$query->tmpFileName($upload_filehandle)],
 	[INCLUDE_PATH],
