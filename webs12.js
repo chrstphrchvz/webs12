@@ -14,6 +14,38 @@
  * https://github.com/ajaxorg/ace/issues/324#issuecomment-151274762 (GitHub user vanillajonathan)
  */ 
 
+/*
+ * Load WebPerl, eval webs12init.pl script, eval HSW12ASM module,
+ * and have webS12asm.pl script ready to eval
+ */
+webs12init_fetch = fetch('webs12init.pl');
+hsw12asm_fetch = fetch('https://cdn.jsdelivr.net/gh/hotwolf/HSW12/Perl/hsw12_asm.pm');
+webs12asm_fetch = fetch('webs12asm.pl');
+var webs12asm_pl;
+// TODO: make this look like a promise chain?
+Perl.init(function () {
+	Perl.start(['-MCarp=verbose']);
+	webs12init_fetch.then(function (response) {
+		response.text().then(function (text) {
+			// Eval the init script
+			Perl.eval(text);
+			hsw12asm_fetch.then(function (response){
+				response.text().then(function(text){
+					// equivalent of 'require hsw12_asm'
+					Perl.eval(text);
+					webs12asm_fetch.then(function (response){
+						response.text().then(function(text) {
+							webs12asm_pl = text;
+							document.getElementById('runAsmButton').disabled = false;
+							document.getElementById('runAsmButton').textContent = 'Run assembler';
+						});
+					});
+				});
+			});
+		});
+	});
+});
+
 
 var editor = ace.edit("editor");
 var unsavedMessage = 'Proceed without saving changes?';
@@ -51,7 +83,7 @@ function checkUnsavedChanges(){
 	return clean || confirmed;
 }
 
-var SRecordFile = "";
+var SRecordFile = new String("");
 
 var asmMessages = ace.edit("asmMessages");
 asmMessages.setReadOnly(true);
@@ -93,33 +125,13 @@ function newAsmFile(event) {
 }
 
 function runAssembler(event) {
-	// cf. https://stackoverflow.com/a/22858914/4896937
-	var formData = new FormData();
-	var blob = new Blob([editor.getValue()], {type: 'plain/text'});
-	formData.append('fileupload', blob, "s12edit.asm");
-	// cf. https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
-	fetch(
-		"https://webs12.host-ed.me/cgi-bin/asmstrings.pl",
-		{
-			method: "POST",
-			body: formData,
-		},
-	).then(
-		function(response) {
-			var contentType = response.headers.get("content-type");
-			if(contentType && contentType.indexOf("application/json") !== -1) {
-				return response.json().then(
-					function(json) {
-						SRecordFile = json.SRecordFile;
-						listFile.setValue(json.listFile, -1);
-						asmMessages.setValue(json.asmMessages, -1);
-					}
-				);
-			} else {
-				console.log("Oops, we haven't got JSON!");
-			}
-		}
-	);
+	document.getElementById('runAsmButton').disabled = true;
+	document.getElementById('downloadSRecFileButton').disabled = true;
+	document.getElementById('runAsmButton').textContent = 'Assembler is running…'
+	Perl.eval(webs12asm_pl);
+	document.getElementById('runAsmButton').textContent = 'Run assembler'
+	document.getElementById('runAsmButton').disabled = false;
+	document.getElementById('downloadSRecFileButton').disabled = false;
 }
 
 /*

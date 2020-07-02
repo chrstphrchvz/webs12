@@ -12,10 +12,14 @@
         left: 0;
     }
 </style>-->
+
+<!-- Steal WebPerl from author's CDN; see https://www.perlmonks.org/?node_id=1225575 for their warning regarding reuse. -->
+<script src="https://webperlcdn.zero-g.net/v0.09-beta/webperl.js"></script>
+
 </head>
 <body>
 <h1>WebS12</h1>
-<p>Powered by: <a href="https://hotwolf.github.io/HSW12/hsw12asm.html">HSW12ASM</a> <a href="https://ace.c9.io/">Ace Editor</a></p>
+<p>Powered by: <a href="https://hotwolf.github.io/HSW12/hsw12asm.html">HSW12ASM</a> <a href="https://webperl.zero-g.net">WebPerl</a> <a href="https://ace.c9.io/">Ace Editor</a></p>
 <p>View project on <a href="https://github.com/chrstphrchvz/webs12">GitHub</a></p>
 
 <button onclick="newAsmFile(event)">New asm file</button>
@@ -23,9 +27,9 @@
 <!-- cf. https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications -->
 <input type="file" id="input" value="Open asm file" onchange="openAsmFile(event)" />
 <button onclick="saveAsmFile(event)">Save asm file</button>
-<button onclick="runAssembler(event)">Run assembler</button>
-<button onclick="editor.getContents()" disabled>Download to board</button>
-<button onclick="download('myprogram.s19',SRecordFile)">Download S-record</button>
+<button onclick="runAssembler(event)" id="runAsmButton" disabled>Assembler not yet ready…</button>
+<button onclick="editor.getContents()" id="downloadSRecBoardButton" disabled>Download to board</button>
+<button onclick="download('myprogram.s19', SRecordFile.valueOf())" id="downloadSRecFileButton" disabled>Download S-record</button>
 <br />
 
 <h2>Assembly file editor</h2>
