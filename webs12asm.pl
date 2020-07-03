@@ -44,7 +44,6 @@ my $code = hsw12_asm->new(
 
 js('window')->{'SRecordFile'} = js_new(
 	'String',
-	'SRecordFile',
 	$code->print_pag_srec(
 		uc($prog_name),
 		$srec_format,
