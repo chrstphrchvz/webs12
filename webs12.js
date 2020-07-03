@@ -24,7 +24,7 @@ webs12asm_fetch = fetch('webs12asm.pl');
 var webs12asm_pl;
 // TODO: make this look like a promise chain?
 Perl.init(function () {
-	Perl.start(['-MCarp=verbose']);
+	Perl.start([]);
 	webs12init_fetch.then(function (response) {
 		response.text().then(function (text) {
 			// Eval the init script
