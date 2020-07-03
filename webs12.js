@@ -92,12 +92,6 @@ listFile.setReadOnly(true);
 
 //editor.setTheme("ace/theme/monokai");
 //editor.getSession().setMode("ace/mode/javascript");
-/*
-$(document).ready(function(){
-	compilerflasher = new compilerflasher(function () {return []});
-});
-*/
-
 
 // cf. https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onload
 function openAsmFile(event) {
