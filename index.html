@@ -7,6 +7,9 @@
 <!-- Steal WebPerl from author's CDN; see https://www.perlmonks.org/?node_id=1225575 for their warning regarding reuse. -->
 <script src="https://webperlcdn.zero-g.net/v0.09-beta/webperl.js"></script>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@4.7.0/css/xterm.css" />
+<script src="https://cdn.jsdelivr.net/npm/xterm@4.7.0/lib/xterm.min.js"></script>
+
 </head>
 <body>
 <h1>WebS12</h1>
@@ -14,6 +17,7 @@
 <a href="https://hotwolf.github.io/HSW12/hsw12asm.html">HSW12ASM</a>
 <a href="https://webperl.zero-g.net">WebPerl</a>
 <a href="https://ace.c9.io/">Ace Editor</a>
+<a href="https://xtermjs.org/">Xterm.js</a>
 </p>
 <p>View project on <a href="https://github.com/chrstphrchvz/webs12">GitHub</a></p>
 
@@ -22,7 +26,6 @@
 <input type="file" id="input" value="Open asm file" onchange="openAsmFile(event)" />
 <button onclick="saveAsmFile(event)">Save asm file</button>
 <button onclick="runAssembler(event)" id="runAsmButton" disabled>Assembler not yet ready…</button>
-<button onclick="editor.getContents()" id="downloadSRecBoardButton" disabled>Download to board</button>
 <button onclick="download('myprogram.s19', SRecordFile.valueOf())" id="downloadSRecFileButton" disabled>Download S-record</button>
 <br />
 
@@ -33,6 +36,14 @@
 <div id="listFile" style="height: 500px; width: 100%"></div>
 <h2>Assembler messages</h2>
 <div id="asmMessages" style="height: 200px; width: 100%"></div>
+
+<br />
+<button onclick="doConnectToBoard(event)" id="connectBoardButton" disabled>Connect to board</button>
+<button onclick="doBoardDownload(event)" id="downloadSRecBoardButton" disabled>Download to board</button>
+
+<h2>Serial monitor</h2>
+<div id="terminal"></div>
+
 <!-- load from CDN --> 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js" type="text/javascript" charset="utf-8"></script>
 

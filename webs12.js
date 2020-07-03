@@ -152,3 +152,54 @@ function saveAsmFile(event) {
 	download('myprogram.asm', editor.getValue());
 	editor.session.getUndoManager().markClean();
 }
+
+if ('serial' in navigator) {
+	document.getElementById('connectBoardButton').disabled = false;
+}
+
+// TODO: use async+await and const as appropriate
+
+async function doConnectToBoard(event) {
+	port = await navigator.serial.requestPort();
+	await port.open({ baudrate: 9600 });
+	portWriter = port.writable.getWriter();
+	term.onData((data) => {
+		// make backspace key work
+		const data2 = data.replace(/\x7f/g, '\b');
+		const encoder = new TextEncoder();
+		portWriter.write(encoder.encode(data2));
+	});
+	port.readable.pipeTo(termInputAdapter);
+	document.getElementById('connectBoardButton').onclick = doDisconnectFromBoard;
+	document.getElementById('connectBoardButton').textContent = 'Disconnect from board';
+	document.getElementById('downloadSRecBoardButton').disabled = false;
+}
+
+function doDisconnectFromBoard(event) {
+
+	// Unfinished: need to "tear down" pipe here?
+
+	document.getElementById('connectBoardButton').onclick = doConnectToBoard;
+	document.getElementById('connectBoardButton').textContent = 'Connect to board';
+	document.getElementById('downloadSRecBoardButton').disabled = true;
+}
+
+function doBoardDownload(event) {
+	const encoder = new TextEncoder();
+	portWriter.write(encoder.encode(SRecordFile.valueOf()));
+}
+
+var port;
+var portWriter;
+
+var term = new Terminal();
+term.open(document.getElementById('terminal'));
+
+var termInputAdapter = new WritableStream({
+	write(chunk, controller) {
+		return new Promise((resolve, reject) => {
+			term.writeUtf8(chunk);
+			resolve();
+		});
+	}
+});
