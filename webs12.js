@@ -162,13 +162,7 @@ if ('serial' in navigator) {
 async function doConnectToBoard(event) {
 	port = await navigator.serial.requestPort();
 	await port.open({ baudrate: 9600 });
-	portWriter = port.writable.getWriter();
-	term.onData((data) => {
-		// make backspace key work like ^H
-		const data2 = data.replace(/\x7f/g, '\b');
-		const encoder = new TextEncoder();
-		portWriter.write(encoder.encode(data2));
-	});
+	termOutputEncoder.readable.pipeTo(port.writable);
 	port.readable.pipeTo(termInputAdapter);
 	document.getElementById('connectBoardButton').onclick = doDisconnectFromBoard;
 	document.getElementById('connectBoardButton').textContent = 'Disconnect from board';
@@ -185,12 +179,10 @@ function doDisconnectFromBoard(event) {
 }
 
 function doBoardDownload(event) {
-	const encoder = new TextEncoder();
-	portWriter.write(encoder.encode(SRecordFile.valueOf()));
+	termOutputEncoderWriter.write(SRecordFile.valueOf());
 }
 
 var port;
-var portWriter;
 
 var term = new Terminal();
 term.open(document.getElementById('terminal'));
@@ -202,4 +194,12 @@ var termInputAdapter = new WritableStream({
 			resolve();
 		});
 	},
+});
+
+var termOutputEncoder = new TextEncoderStream();
+var termOutputEncoderWriter = termOutputEncoder.writable.getWriter();
+term.onData((data) => {
+	// make backspace key work like ^H
+	const data2 = data.replace(/\x7f/g, '\b');
+	termOutputEncoderWriter.write(data2);
 });
