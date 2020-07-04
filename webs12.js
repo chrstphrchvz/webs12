@@ -201,5 +201,5 @@ var termInputAdapter = new WritableStream({
 			term.writeUtf8(chunk);
 			resolve();
 		});
-	}
+	},
 });
