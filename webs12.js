@@ -164,7 +164,7 @@ async function doConnectToBoard(event) {
 	await port.open({ baudrate: 9600 });
 	portWriter = port.writable.getWriter();
 	term.onData((data) => {
-		// make backspace key work
+		// make backspace key work like ^H
 		const data2 = data.replace(/\x7f/g, '\b');
 		const encoder = new TextEncoder();
 		portWriter.write(encoder.encode(data2));
