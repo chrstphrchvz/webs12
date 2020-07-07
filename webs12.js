@@ -163,7 +163,7 @@ async function doConnectToBoard(event) {
 	port = await navigator.serial.requestPort();
 	await port.open({ baudrate: 9600 });
 	portWriter = port.writable.getWriter();
-	term.onData((data) => {
+	onData_IDisposable = term.onData((data) => {
 		// make backspace key work like ^H
 		const data2 = data.replace(/\x7f/g, '\b');
 		const encoder = new TextEncoder();
@@ -176,6 +176,10 @@ async function doConnectToBoard(event) {
 }
 
 function doDisconnectFromBoard(event) {
+
+	// Stop writing terminal output to port
+	onData_IDisposable.dispose();
+	onData_IDisposable = undefined;
 
 	// Unfinished: need to "tear down" pipe here?
 
@@ -191,6 +195,7 @@ function doBoardDownload(event) {
 
 var port;
 var portWriter;
+var onData_IDisposable;
 
 var term = new Terminal();
 term.open(document.getElementById('terminal'));
