@@ -22,28 +22,21 @@ webs12init_fetch = fetch('webs12init.pl');
 hsw12asm_fetch = fetch('https://cdn.jsdelivr.net/gh/hotwolf/HSW12/Perl/hsw12_asm.pm');
 webs12asm_fetch = fetch('webs12asm.pl');
 var webs12asm_pl;
-// TODO: make this look like a promise chain?
-Perl.init(function () {
+Perl.init(async function () {
 	Perl.start([]);
-	webs12init_fetch.then(function (response) {
-		response.text().then(function (text) {
-			// Eval the init script
-			Perl.eval(text);
-			hsw12asm_fetch.then(function (response){
-				response.text().then(function(text){
-					// equivalent of 'require hsw12_asm'
-					Perl.eval(text);
-					webs12asm_fetch.then(function (response){
-						response.text().then(function(text) {
-							webs12asm_pl = text;
-							document.getElementById('runAsmButton').disabled = false;
-							document.getElementById('runAsmButton').textContent = 'Run assembler';
-						});
-					});
-				});
-			});
-		});
-	});
+	var response = await webs12init_fetch;
+	const webs12init_pl = await response.text();
+	// Eval the init script
+	Perl.eval(webs12init_pl);
+	response = await hsw12asm_fetch;
+	const hsw12asm_pm = await response.text();
+	// equivalent of 'require hsw12_asm'
+	Perl.eval(hsw12asm_pm);
+	response = await webs12asm_fetch;
+	webs12sm_pl = await response.text();
+	
+	document.getElementById('runAsmButton').disabled = false;
+	document.getElementById('runAsmButton').textContent = 'Run assembler';
 });
 
 
@@ -163,13 +156,13 @@ async function doConnectToBoard(event) {
 	port = await navigator.serial.requestPort();
 	await port.open({ baudrate: 9600 });
 	portWriter = port.writable.getWriter();
-	onData_IDisposable = term.onData((data) => {
+	onData_IDisposable = term.onData( async (data) => {
 		// make backspace key work like ^H
 		const data2 = data.replace(/\x7f/g, '\b');
 		const encoder = new TextEncoder();
-		portWriter.write(encoder.encode(data2));
+		await portWriter.write(encoder.encode(data2));
 	});
-	port.readable.pipeTo(termInputAdapter);
+	await port.readable.pipeTo(termInputAdapter);
 	document.getElementById('connectBoardButton').onclick = doDisconnectFromBoard;
 	document.getElementById('connectBoardButton').textContent = 'Disconnect from board';
 	document.getElementById('downloadSRecBoardButton').disabled = false;
