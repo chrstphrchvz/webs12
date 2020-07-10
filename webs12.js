@@ -154,7 +154,12 @@ if ('serial' in navigator) {
 
 async function doConnectToBoard(event) {
 	port = await navigator.serial.requestPort();
-	await port.open({ baudrate: 9600 });
+	await port.open({
+		baudrate: parseInt(
+			document.getElementById('baudrateSelect').value,
+			10,
+		),
+	});
 	portWriter = port.writable.getWriter();
 	onData_IDisposable = term.onData( async (data) => {
 		// make backspace key work like ^H
@@ -166,6 +171,7 @@ async function doConnectToBoard(event) {
 	document.getElementById('connectBoardButton').onclick = doDisconnectFromBoard;
 	document.getElementById('connectBoardButton').textContent = 'Disconnect from board';
 	document.getElementById('downloadSRecBoardButton').disabled = false;
+	document.getElementById('baudrateSelect').disabled = true;
 }
 
 function doDisconnectFromBoard(event) {
@@ -179,6 +185,7 @@ function doDisconnectFromBoard(event) {
 	document.getElementById('connectBoardButton').onclick = doConnectToBoard;
 	document.getElementById('connectBoardButton').textContent = 'Connect to board';
 	document.getElementById('downloadSRecBoardButton').disabled = true;
+	document.getElementById('baudrateSelect').disabled = false;
 }
 
 function doBoardDownload(event) {
