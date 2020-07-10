@@ -22,16 +22,23 @@ webs12init_fetch = fetch('webs12init.pl');
 hsw12asm_fetch = fetch('https://cdn.jsdelivr.net/gh/hotwolf/HSW12/Perl/hsw12_asm.pm');
 webs12asm_fetch = fetch('webs12asm.pl');
 var webs12asm_pl;
+const t0 = performance.now() / 1000.0;
 Perl.init(async function () {
+	const t1 = performance.now() / 1000.0;
+	console.log("init took " + (t1 - t0) + "s");
 	Perl.start([]);
+	const t2 = performance.now() / 1000.0;
 	var response = await webs12init_fetch;
 	const webs12init_pl = await response.text();
 	// Eval the init script
 	Perl.eval(webs12init_pl);
+	console.log("eval webs12init_pl took " + (t2 - t1) + "s");
+	const t3 = performance.now() / 1000.0;
 	response = await hsw12asm_fetch;
 	const hsw12asm_pm = await response.text();
 	// equivalent of 'require hsw12_asm'
 	Perl.eval(hsw12asm_pm);
+	console.log("eval hsw12asm_pm took " + (t3 - t2) + "s");
 	response = await webs12asm_fetch;
 	webs12sm_pl = await response.text();
 	
