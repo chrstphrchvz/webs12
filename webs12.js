@@ -174,22 +174,21 @@ async function doConnectToBoard(event) {
 		const encoder = new TextEncoder();
 		await portWriter.write(encoder.encode(data2));
 	});
-	//await port.readable.pipeTo(termInputAdapter);
-	// Example usage instead relies on a reader + infinite loop:
-	portReader = port.readable.getReader();
+
+	// See https://github.com/whatwg/streams/issues/1055
+	portReadPipeAbortController = new AbortController();
+	portReadPipePromise = port.readable.pipeTo(
+		termInputAdapter,
+		{
+			preventAbort: true,
+			signal: portReadPipeAbortController.signal,
+		},
+	);
+
 	document.getElementById('connectBoardButton').onclick = doDisconnectFromBoard;
 	document.getElementById('connectBoardButton').textContent = 'Disconnect from board';
 	document.getElementById('downloadSRecBoardButton').disabled = false;
 	document.getElementById('baudrateSelect').disabled = true;
-	while (true) {
-		const { value, done } = await portReader.read();
-		if (done) {
-			break;
-		}
-		if (value) {
-			term.writeUtf8(value);
-		}
-	}
 }
 
 async function doDisconnectFromBoard(event) {
@@ -200,10 +199,13 @@ async function doDisconnectFromBoard(event) {
 
 	await portWriter.close();
 	portWriter = undefined;
-	// Unfinished: need to "tear down" pipe here?
-	await portReader.cancel();
-	await portReader.releaseLock();
-	portReader = undefined;
+
+	// See https://github.com/whatwg/streams/issues/1055
+	portReadPipeAbortController.abort();
+	await portReadPipePromise.catch(() => {});
+	portReadPipeAbortController = undefined;
+	portReadPipePromise = undefined;
+
 	await port.close();
 	port = undefined;
 
@@ -220,15 +222,13 @@ function doBoardDownload(event) {
 
 var port;
 var portWriter;
-var portReader;
+var portReadPipeAbortController;
+var portReadPipePromise;
 var onData_IDisposable;
 
 var term = new Terminal();
 term.open(document.getElementById('terminal'));
 
-// Is there even a supported way to handle serial port closing when piped?
-// Let's wait and see: https://stackoverflow.com/q/62814526/4896937
-/*
 var termInputAdapter = new WritableStream({
 	write(chunk, controller) {
 		return new Promise((resolve, reject) => {
@@ -237,4 +237,3 @@ var termInputAdapter = new WritableStream({
 		});
 	},
 });
-*/
