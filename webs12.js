@@ -176,6 +176,7 @@ async function doConnectToBoard(event) {
 	});
 
 	// See https://github.com/whatwg/streams/issues/1055
+	// and https://stackoverflow.com/q/62814526/4896937
 	portReadPipeAbortController = new AbortController();
 	portReadPipePromise = port.readable.pipeTo(
 		termInputAdapter,
@@ -201,6 +202,7 @@ async function doDisconnectFromBoard(event) {
 	portWriter = undefined;
 
 	// See https://github.com/whatwg/streams/issues/1055
+	// and https://stackoverflow.com/q/62814526/4896937
 	portReadPipeAbortController.abort();
 	await portReadPipePromise.catch(() => {});
 	portReadPipeAbortController = undefined;
