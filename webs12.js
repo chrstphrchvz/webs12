@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * For handling unsaved changes, a few mechanisms are used:
  * 1. window.onbeforeunload is set to a function that
@@ -18,9 +20,9 @@
  * Load WebPerl, eval webs12init.pl script, eval HSW12ASM module,
  * and have webS12asm.pl script ready to eval
  */
-webs12init_fetch = fetch('webs12init.pl');
-hsw12asm_fetch = fetch('https://cdn.jsdelivr.net/gh/hotwolf/HSW12/Perl/hsw12_asm.pm');
-webs12asm_fetch = fetch('webs12asm.pl');
+const webs12init_fetch = fetch('webs12init.pl');
+const hsw12asm_fetch = fetch('https://cdn.jsdelivr.net/gh/hotwolf/HSW12/Perl/hsw12_asm.pm');
+const webs12asm_fetch = fetch('webs12asm.pl');
 var webs12asm_pl;
 const t0 = performance.now() / 1000.0;
 Perl.init(async function () {
@@ -40,7 +42,7 @@ Perl.init(async function () {
 	Perl.eval(hsw12asm_pm);
 	console.log("eval hsw12asm_pm took " + (t3 - t2) + "s");
 	response = await webs12asm_fetch;
-	webs12sm_pl = await response.text();
+	webs12asm_pl = await response.text();
 	
 	document.getElementById('runAsmButton').disabled = false;
 	document.getElementById('runAsmButton').textContent = 'Run assembler';
