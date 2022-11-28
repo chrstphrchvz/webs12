@@ -164,7 +164,7 @@ if ('serial' in navigator) {
 async function doConnectToBoard(event) {
 	port = await navigator.serial.requestPort();
 	await port.open({
-		baudrate: parseInt(
+		baudRate: parseInt(
 			document.getElementById('baudrateSelect').value,
 			10,
 		),
