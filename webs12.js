@@ -236,7 +236,7 @@ term.open(document.getElementById('terminal'));
 var termInputAdapter = new WritableStream({
 	write(chunk, controller) {
 		return new Promise((resolve, reject) => {
-			term.writeUtf8(chunk);
+			term.write(chunk);
 			resolve();
 		});
 	},
