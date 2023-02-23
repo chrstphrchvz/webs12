@@ -186,7 +186,7 @@ async function doConnectToBoard(event) {
 			preventAbort: true,
 			signal: portReadPipeAbortController.signal,
 		},
-	);
+	).catch(handleBoardDisconnect);
 
 	document.getElementById('connectBoardButton').onclick = doDisconnectFromBoard;
 	document.getElementById('connectBoardButton').textContent = 'Disconnect from board';
@@ -195,18 +195,21 @@ async function doConnectToBoard(event) {
 }
 
 async function doDisconnectFromBoard(event) {
+	// See https://github.com/whatwg/streams/issues/1055
+	// and https://stackoverflow.com/q/62814526/4896937
+	portReadPipeAbortController.abort();
+}
+
+async function handleBoardDisconnect(error) {
 
 	// Stop writing terminal output to port
 	onData_IDisposable.dispose();
 	onData_IDisposable = undefined;
 
-	await portWriter.close();
+	// Close portWriter, ignoring any errors (e.g. due to unsent data)
+	await portWriter.close().catch(() => {});
 	portWriter = undefined;
 
-	// See https://github.com/whatwg/streams/issues/1055
-	// and https://stackoverflow.com/q/62814526/4896937
-	portReadPipeAbortController.abort();
-	await portReadPipePromise.catch(() => {});
 	portReadPipeAbortController = undefined;
 	portReadPipePromise = undefined;
 
