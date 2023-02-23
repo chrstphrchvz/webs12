@@ -18,7 +18,7 @@
 
 /*
  * Load WebPerl, eval webs12init.pl script, eval HSW12ASM module,
- * and have webS12asm.pl script ready to eval
+ * and have webs12asm.pl script ready to eval
  */
 const webs12init_fetch = fetch('webs12init.pl');
 const hsw12asm_fetch = fetch('https://cdn.jsdelivr.net/gh/hotwolf/HSW12/Perl/hsw12_asm.pm');
