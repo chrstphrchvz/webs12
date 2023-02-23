@@ -219,9 +219,11 @@ async function doDisconnectFromBoard(event) {
 	document.getElementById('baudrateSelect').disabled = false;
 }
 
-function doBoardDownload(event) {
+async function doBoardDownload(event) {
 	const encoder = new TextEncoder();
-	portWriter.write(encoder.encode(SRecordFile.valueOf()));
+	await portWriter.write(
+		encoder.encode(SRecordFile.valueOf())
+	);
 }
 
 var port;
